@@ -2,9 +2,8 @@ name: Refresh Tokyo Tech Events
 
 on:
   schedule:
-    # 09:00 UTC = 18:00 JST, every day. Adjust as you like.
-    - cron: '0 9 * * *'
-  workflow_dispatch: {}   # lets you trigger it manually from the Actions tab
+    - cron: '0 9 */3 * *'
+  workflow_dispatch: {}  
 
 permissions:
   contents: write
