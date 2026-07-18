@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-07-14T00:00:00+00:00",
+  "count": 4,
+  "events": [
+    {
+      "source": "connpass",
+      "id": "sample-1",
+      "title": "Tokyo Rust Engineers Meetup #42",
+      "url": "https://connpass.com/",
+      "start": "2026-07-18T19:00:00+09:00",
+      "end": "2026-07-18T21:00:00+09:00",
+      "venue": "Shibuya, Tokyo",
+      "address": "Tokyo, Shibuya-ku",
+      "group": "Tokyo Rust Engineers",
+      "fee": "Free",
+      "capacity": 60,
+      "accepted": 47,
+      "description": "Lightning talks on async runtimes and WASM tooling."
+    },
+    {
+      "source": "connpass",
+      "id": "sample-2",
+      "title": "AI Tinkerers Tokyo: Local LLM Night",
+      "url": "https://connpass.com/",
+      "start": "2026-07-21T18:30:00+09:00",
+      "end": "2026-07-21T21:00:00+09:00",
+      "venue": "Online",
+      "address": "",
+      "group": "AI Tinkerers",
+      "fee": "Free",
+      "capacity": 200,
+      "accepted": 188,
+      "description": "Hands-on session running quantized models on consumer GPUs."
+    },
+    {
+      "source": "doorkeeper",
+      "id": "sample-3",
+      "title": "Startup Pitch Night: Fintech Edition",
+      "url": "https://doorkeeper.jp/",
+      "start": "2026-07-24T19:00:00+09:00",
+      "end": "2026-07-24T22:00:00+09:00",
+      "venue": "Roppongi, Tokyo",
+      "address": "Tokyo, Minato-ku",
+      "group": "Tokyo Startup Community",
+      "fee": "Paid",
+      "capacity": 120,
+      "accepted": 120,
+      "description": "Six early-stage fintech startups pitch to a panel of investors."
+    },
+    {
+      "source": "connpass",
+      "id": "sample-4",
+      "title": "Python Data Engineering Study Session",
+      "url": "https://connpass.com/",
+      "start": "2026-07-27T19:00:00+09:00",
+      "end": "2026-07-27T20:30:00+09:00",
+      "venue": "Shinjuku, Tokyo",
+      "address": "Tokyo, Shinjuku-ku",
+      "group": "PyData Tokyo",
+      "fee": "Free",
+      "capacity": 40,
+      "accepted": 12,
+      "description": "Deep dive into streaming pipelines with dbt and Airflow."
+    }
+  ]
+}

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>東京 TECH DEPARTURES — Tokyo Tech Events Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0d12;
+    --panel: #12161f;
+    --panel-alt: #171c26;
+    --divider: #262d3a;
+    --text-primary: #eef0e8;
+    --text-dim: #8891a3;
+    --amber: #ffb703;
+    --amber-dim: #8a641c;
+    --green: #3ddc84;
+    --red: #ff5d5d;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at top, rgba(255,183,3,0.05), transparent 60%),
+      var(--bg);
+    color:var(--text-primary);
+    font-family:var(--sans);
+    min-height:100vh;
+    padding-bottom:64px;
+  }
+
+  /* ---------- Header ---------- */
+  header.board-header{
+    border-bottom:1px solid var(--divider);
+    padding:28px 24px 20px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  }
+  .title-block{display:flex; flex-direction:column; gap:6px;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.28em;
+    color:var(--amber);
+    text-transform:uppercase;
+  }
+  h1{
+    margin:0;
+    font-family:var(--mono);
+    font-weight:800;
+    font-size:clamp(24px, 4vw, 38px);
+    letter-spacing:0.02em;
+  }
+  h1 .jp{color:var(--text-dim); font-weight:500; margin-right:10px;}
+  .clock-block{
+    font-family:var(--mono);
+    text-align:right;
+    color:var(--amber);
+  }
+  .clock-block .time{font-size:28px; font-weight:700; letter-spacing:0.05em;}
+  .clock-block .date{font-size:12px; color:var(--text-dim); letter-spacing:0.08em;}
+
+  /* ---------- Controls ---------- */
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+    padding:18px 24px;
+    border-bottom:1px solid var(--divider);
+  }
+  .search-input{
+    flex:1;
+    min-width:200px;
+    background:var(--panel);
+    border:1px solid var(--divider);
+    color:var(--text-primary);
+    font-family:var(--sans);
+    font-size:14px;
+    padding:10px 14px;
+    border-radius:2px;
+  }
+  .search-input::placeholder{color:var(--text-dim);}
+  .search-input:focus{outline:none; border-color:var(--amber);}
+  .chip{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    background:var(--panel);
+    border:1px solid var(--divider);
+    padding:9px 14px;
+    border-radius:2px;
+    cursor:pointer;
+    user-select:none;
+    transition:border-color .15s, color .15s;
+  }
+  .chip[data-active="true"]{
+    color:var(--bg);
+    background:var(--amber);
+    border-color:var(--amber);
+    font-weight:700;
+  }
+  .chip:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+
+  /* ---------- Board ---------- */
+  .board-wrap{padding:0 24px; margin-top:18px;}
+  .board{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--panel);
+    border:1px solid var(--divider);
+  }
+  .board thead th{
+    text-align:left;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    padding:12px 16px;
+    border-bottom:1px solid var(--divider);
+    background:var(--panel-alt);
+  }
+  .board tbody tr{
+    border-bottom:1px solid var(--divider);
+    animation: flipIn 0.5s ease both;
+  }
+  .board tbody tr:last-child{border-bottom:none;}
+  .board tbody tr:hover{background:var(--panel-alt);}
+  .board td{
+    padding:14px 16px;
+    font-size:14px;
+    vertical-align:top;
+  }
+  td.mono{font-family:var(--mono);}
+  .event-title{
+    font-weight:600;
+    color:var(--text-primary);
+    text-decoration:none;
+    display:block;
+    margin-bottom:3px;
+  }
+  .event-title:hover{color:var(--amber);}
+  .event-desc{
+    color:var(--text-dim);
+    font-size:12.5px;
+    line-height:1.4;
+    max-width:340px;
+  }
+  .event-group{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-dim);
+    letter-spacing:0.03em;
+  }
+  .venue-line{font-size:13px;}
+  .venue-tag{
+    font-family:var(--mono);
+    font-size:10px;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+  .status{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--mono);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    padding:4px 8px;
+    border-radius:2px;
+  }
+  .status .dot{width:7px; height:7px; border-radius:50%; flex:none;}
+  .status.open{color:var(--green); background:rgba(61,220,132,0.08);}
+  .status.open .dot{background:var(--green);}
+  .status.few{color:var(--amber); background:rgba(255,183,3,0.08); animation: blink 1.6s ease-in-out infinite;}
+  .status.few .dot{background:var(--amber);}
+  .status.full{color:var(--red); background:rgba(255,93,93,0.08);}
+  .status.full .dot{background:var(--red);}
+  .fee-free{color:var(--green); font-family:var(--mono); font-size:12px;}
+  .fee-paid{color:var(--text-dim); font-family:var(--mono); font-size:12px;}
+  .depart-link{
+    color:var(--text-dim);
+    font-family:var(--mono);
+    font-size:16px;
+    text-decoration:none;
+  }
+  .depart-link:hover{color:var(--amber);}
+
+  @keyframes flipIn{
+    from{opacity:0; transform: rotateX(35deg) translateY(-4px); transform-origin:top;}
+    to{opacity:1; transform: rotateX(0) translateY(0);}
+  }
+  @keyframes blink{
+    0%, 100%{opacity:1;}
+    50%{opacity:0.45;}
+  }
+
+  /* ---------- Empty / loading ---------- */
+  .board-message{
+    padding:48px 24px;
+    text-align:center;
+    font-family:var(--mono);
+    color:var(--text-dim);
+    letter-spacing:0.04em;
+    border:1px dashed var(--divider);
+    margin:18px 24px 0;
+  }
+
+  footer{
+    padding:20px 24px 0;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--text-dim);
+    letter-spacing:0.05em;
+  }
+
+  /* ---------- Mobile: cards instead of table ---------- */
+  @media (max-width: 720px){
+    .board thead{display:none;}
+    .board, .board tbody, .board tr, .board td{display:block; width:100%;}
+    .board tbody tr{
+      padding:14px 16px;
+      border-bottom:1px solid var(--divider);
+    }
+    .board td{padding:4px 0; border:none;}
+    .depart-link{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="board-header">
+  <div class="title-block">
+    <span class="eyebrow">Departure Board — 発車案内</span>
+    <h1><span class="jp">東京</span>TECH DEPARTURES</h1>
+  </div>
+  <div class="clock-block">
+    <div class="time" id="clock">--:--:--</div>
+    <div class="date" id="clockDate">JST</div>
+  </div>
+</header>
+
+<div class="controls">
+  <input type="text" class="search-input" id="searchInput" placeholder="Search by title, group, or venue…" />
+  <button class="chip" data-filter="fee" data-value="Free" data-active="false">Free only</button>
+  <button class="chip" data-filter="source" data-value="connpass" data-active="false">Connpass</button>
+  <button class="chip" data-filter="source" data-value="doorkeeper" data-active="false">Doorkeeper</button>
+  <button class="chip" data-filter="venue" data-value="Online" data-active="false">Online</button>
+</div>
+
+<div class="board-wrap">
+  <table class="board" id="board" hidden>
+    <thead>
+      <tr>
+        <th>Depart</th>
+        <th>Event</th>
+        <th>Venue</th>
+        <th>Group</th>
+        <th>Seats</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="boardBody"></tbody>
+  </table>
+  <div class="board-message" id="boardMessage">Loading schedule…</div>
+</div>
+
+<footer>
+  <span id="lastUpdated">Last updated: —</span>
+  <span id="eventCount">0 departures scheduled</span>
+</footer>
+
+<script>
+  // ---- Live clock (JST) ----
+  function tickClock(){
+    const now = new Date();
+    const jst = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+    const hh = String(jst.getHours()).padStart(2,'0');
+    const mm = String(jst.getMinutes()).padStart(2,'0');
+    const ss = String(jst.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent = `${hh}:${mm}:${ss}`;
+    const dateStr = jst.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    document.getElementById('clockDate').textContent = `${dateStr} · JST`;
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  // ---- State ----
+  let allEvents = [];
+  const activeFilters = { fee: null, source: null, venue: null };
+  let searchTerm = '';
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const key = chip.dataset.filter;
+      const val = chip.dataset.value;
+      const isActive = chip.dataset.active === 'true';
+      // reset other chips in same group
+      document.querySelectorAll(`.chip[data-filter="${key}"]`).forEach(c => c.dataset.active = 'false');
+      chip.dataset.active = isActive ? 'false' : 'true';
+      activeFilters[key] = isActive ? null : val;
+      render();
+    });
+  });
+
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchTerm = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  function seatStatus(ev){
+    if (ev.capacity == null || ev.accepted == null) return { label: 'OPEN', cls: 'open' };
+    const left = ev.capacity - ev.accepted;
+    if (left <= 0) return { label: 'FULL', cls: 'full' };
+    if (left <= 5) return { label: `${left} LEFT`, cls: 'few' };
+    return { label: 'OPEN', cls: 'open' };
+  }
+
+  function formatDeparture(iso){
+    const d = new Date(iso);
+    const jst = new Date(d.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+    const date = jst.toLocaleDateString('en-US', { month:'short', day:'2-digit' });
+    const time = jst.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', hour12:false });
+    return { date, time };
+  }
+
+  function render(){
+    const body = document.getElementById('boardBody');
+    const table = document.getElementById('board');
+    const msg = document.getElementById('boardMessage');
+
+    let filtered = allEvents.filter(ev => {
+      if (activeFilters.fee && ev.fee !== activeFilters.fee) return false;
+      if (activeFilters.source && ev.source !== activeFilters.source) return false;
+      if (activeFilters.venue === 'Online' && !(ev.venue || '').toLowerCase().includes('online')) return false;
+      if (searchTerm){
+        const hay = `${ev.title} ${ev.group} ${ev.venue}`.toLowerCase();
+        if (!hay.includes(searchTerm)) return false;
+      }
+      return true;
+    });
+
+    document.getElementById('eventCount').textContent = `${filtered.length} departure${filtered.length === 1 ? '' : 's'} scheduled`;
+
+    if (filtered.length === 0){
+      table.hidden = true;
+      msg.hidden = false;
+      msg.textContent = allEvents.length === 0
+        ? 'No departures scheduled — board refreshes weekly.'
+        : 'No matches — try clearing a filter.';
+      return;
+    }
+
+    msg.hidden = true;
+    table.hidden = false;
+    body.innerHTML = '';
+
+    filtered.forEach((ev, i) => {
+      const { date, time } = formatDeparture(ev.start);
+      const status = seatStatus(ev);
+      const seatsLabel = (ev.capacity != null) ? `${ev.accepted ?? 0} / ${ev.capacity}` : '—';
+      const tr = document.createElement('tr');
+      tr.style.animationDelay = `${Math.min(i, 12) * 40}ms`;
+      tr.innerHTML = `
+        <td class="mono">${date}<br><span style="color:var(--amber)">${time}</span></td>
+        <td>
+          <a class="event-title" href="${ev.url}" target="_blank" rel="noopener">${escapeHtml(ev.title || 'Untitled event')}</a>
+          ${ev.description ? `<div class="event-desc">${escapeHtml(ev.description)}</div>` : ''}
+        </td>
+        <td>
+          <div class="venue-line">${escapeHtml(ev.venue || 'TBA')}</div>
+          <div class="venue-tag">${escapeHtml(ev.source)}</div>
+        </td>
+        <td class="event-group">${escapeHtml(ev.group || '—')}</td>
+        <td class="mono">${seatsLabel}<br><span class="${ev.fee === 'Free' ? 'fee-free' : 'fee-paid'}">${ev.fee}</span></td>
+        <td><span class="status ${status.cls}"><span class="dot"></span>${status.label}</span></td>
+        <td><a class="depart-link" href="${ev.url}" target="_blank" rel="noopener">→</a></td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+
+  function escapeHtml(str){
+    return String(str ?? '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  // ---- Load data ----
+  fetch('events.json', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(data => {
+      allEvents = data.events || [];
+      const updated = new Date(data.generated_at);
+      document.getElementById('lastUpdated').textContent =
+        `Last updated: ${updated.toLocaleString('en-US', { timeZone: 'Asia/Tokyo', dateStyle: 'medium', timeStyle: 'short' })} JST`;
+      render();
+    })
+    .catch(err => {
+      document.getElementById('boardMessage').hidden = false;
+      document.getElementById('boardMessage').textContent = 'Board offline — could not load events.json.';
+      console.error(err);
+    });
+</script>
+
+</body>
+</html>

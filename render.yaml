@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: tokyo-tech-board
+    runtime: static
+    buildCommand: ""            # no build step — it's plain static HTML/JS
+    staticPublishPath: ./public
+    autoDeploy: true            # redeploy automatically whenever main is pushed to
+    headers:
+      - path: /events.json
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

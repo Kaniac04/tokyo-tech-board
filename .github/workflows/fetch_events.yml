@@ -1,0 +1,43 @@
+name: Refresh Tokyo Tech Events
+
+on:
+  schedule:
+    # 09:00 UTC = 18:00 JST, every day. Adjust as you like.
+    - cron: '0 9 * * *'
+  workflow_dispatch: {}   # lets you trigger it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch events
+        env:
+          CONNPASS_KEY: ${{ secrets.CONNPASS_KEY }}
+          DOORKEEPER_TOKEN: ${{ secrets.DOORKEEPER_TOKEN }}
+        run: python scripts/fetch_events.py
+
+      - name: Commit updated events.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/events.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: refresh events.json [skip ci]"
+            git push
+          fi
